@@ -1,0 +1,66 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/paper-styles/typography.html">
+
+<dom-module id="hsa-item">
+	<template>
+		<style>
+			:host {
+				@apply(--paper-font-common-base);
+				cursor: pointer;
+			}
+			
+			.list-item {
+				@apply(--layout-horizontal);
+				@apply(--layout-justified);
+				cursor: pointer;
+				background-color: white;
+				border: 1px solid #ddd;
+				padding: 15px;
+				margin-bottom: 15px;
+			}
+			
+			.item-flex {
+				@apply(--layout-fit);
+			}
+		</style>
+
+		<div class="list-item" tabindex="0" on-tap="_collapseExpand">
+			<img src="{{image}}" style="width: 45px; height: 45px">
+			<div>{{name}}</div>
+			<div>The end</div>
+		</div>
+
+	</template>
+
+	<script>
+		HTMLImports.whenReady(function() {
+			Polymer({
+				is: 'hsa-item',
+				properties: {
+					name: {
+						type: String
+					},
+					image: {
+						type: String
+					}
+				},
+
+				_collapseExpand: function(e) {
+					var list = this.$.list;
+					var index = e.model.index;
+					var isExpanded = list.items[index].expanded;
+
+					list.set('items.' + index + '.expanded', !isExpanded);
+					list.updateSizeForItem(e.model.index);
+				},
+
+				getClassForItem: function(expanded) {
+					return expanded ? 'list-item expanded' : 'list-item';
+				}
+			});
+		});
+	</script>
+
+</dom-module>

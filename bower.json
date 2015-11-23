@@ -1,0 +1,24 @@
+{
+  "name": "HSA-sökning",
+  "version": "0.1.0",
+  "authors": [
+    "Roger Salomonsson <roger@medicor.se>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#latest",
+    "iron-flex-layout": "PolymerElements/iron-flex-layout#latest",
+    "iron-icons": "PolymerElements/iron-icons#latest",
+    "iron-list": "PolymerElements/iron-list#latest",
+    "iron-ajax": "PolymerElements/iron-ajax#latest",
+    "neon-animation": "PolymerElements/neon-animation#latest"
+  }
+}

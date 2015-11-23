@@ -1,0 +1,54 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/paper-styles/typography.html">
+<link rel="import" href="../elements/hsa-item.html">
+
+<dom-module id="hsa-search-app">
+	<template>
+		<style>
+			:root {
+				--default-primary-color: #00796b;
+			}
+			
+			:host {
+		        @apply(--layout-fit);
+		        @apply(--layout-vertical);
+		        @apply(--paper-font-common-base);
+				background-color: var(--paper-grey-200, #eee);
+			}
+			
+			iron-list {
+		        flex: 1 1;
+				--iron-list-items-container: {
+					max-width: 960px;
+					margin: auto;
+					margin-top: 60px;
+				}
+				;
+			}
+		</style>
+
+		<iron-ajax url="../bower_components/iron-list/demo/data/contacts.json" last-response="{{items}}" auto></iron-ajax>
+		<iron-list id="list" items="[[items]]" as="item">
+			<template>
+				<hsa-item name="[[item.name]]" image="[[item.image]]" />
+			</template>
+		</iron-list>
+
+	</template>
+
+	<script>
+		Polymer({
+			is: 'hsa-search-app',
+			properties: {
+				items: {
+					type: Array
+				}
+			}
+		});
+	</script>
+
+</dom-module>
