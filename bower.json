@@ -21,6 +21,7 @@
     "iron-ajax": "PolymerElements/iron-ajax#latest",
     "byutv-jsonp": "latest",
     "neon-animation": "PolymerElements/neon-animation#latest",
+    "paper-toolbar": "PolymerElements/paper-toolbar#latest",
     "paper-input": "PolymerElements/paper-input#latest"
   }
 }

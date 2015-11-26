@@ -3,59 +3,78 @@
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../bower_components/byutv-jsonp/byutv-jsonp.html">
-<link rel="import" href="../bower_components/paper-styles/typography.html">
+<link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../elements/hsa-item.html">
-
 <dom-module id="hsa-search-app">
 	<template>
 		<style>
 			:root {
-				--default-primary-color: #00796b;
+				--default-primary-color: var(--paper-amber-900);
 			}
 			
 			:host {
 				@apply(--layout-fit);
 				@apply(--layout-vertical);
 				@apply(--paper-font-common-base);
-				background-color: var(--paper-grey-200, #eee);
+				background-color: var(--paper-amber-50);
 			}
 			
 			iron-list {
 				flex: 1 100%;
 				--iron-list-items-container: {
 					max-width: 960px;
-					margin: auto;
-					margin-top: 60px;
+					margin: 45px auto;
 				}
 				;
+			}
+			
+			paper-toolbar {
+				--paper-toolbar-background: var(--paper-amber-100);
+				@apply(--shadow-elevation-6dp);
+				z-index: 1;
 			}
 			
 			paper-input {
 				max-width: 960px;
 				min-width: 420px;
 				margin: auto;
+				margin-top: 30px;
+				--paper-input-container-label: {
+					font-size: 24px;
+					line-height: 36px;
+				}
+				;
+				--paper-input-container-input: {
+					font-size: 24px;
+					line-height: 36px;
+				}
+				;
 			}
 		</style>
 
-		<paper-input label="Namn på vårdenhet"></paper-input>
+		<paper-toolbar class="tall">
+			<paper-input label="Sök på vårdenhet"></paper-input>
+		</paper-toolbar>
 		<byutv-jsonp auto url="http://api.offentligdata.minavardkontakter.se/orgmaster-hsa/v1/hsaObjects.js" params='{"fields":"hsaId,relativeDistinguishedName,countyName","lat":"59.4802","long":"18.0947","distance":4}' last-response="{{items}}"></byutv-jsonp>
 		<iron-list id="list" items="[[items]]" as="item">
 			<template>
-				<hsa-item hsaid="[[item.hsaId]]" name="[[item.relativeDistinguishedName]]" county="[[item.countyName]]" />
+				<hsa-item hsaid="{{item.hsaId}}" name="{{item.relativeDistinguishedName}}" county="{{item.countyName}}"></hsa-item>
 			</template>
 		</iron-list>
 
 	</template>
 
 	<script>
-		Polymer({
-			is: 'hsa-search-app',
-			properties: {
-				items: {
-					type: Array
+		HTMLImports.whenReady(function() {
+			Polymer({
+				is: 'hsa-search-app',
+				properties: {
+					items: {
+						type: Array
+					}
 				}
-			}
+			});
 		});
 	</script>
 
