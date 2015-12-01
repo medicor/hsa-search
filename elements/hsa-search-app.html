@@ -2,7 +2,7 @@
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-list/iron-list.html">
-<link rel="import" href="../bower_components/byutv-jsonp/byutv-jsonp.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../elements/hsa-item.html">
@@ -54,12 +54,12 @@
 		</style>
 
 		<paper-toolbar class="tall">
-			<paper-input label="Sök på vårdenhet"></paper-input>
+			<paper-input label="Sök vårdenhet"></paper-input>
 		</paper-toolbar>
-		<byutv-jsonp auto url="http://api.offentligdata.minavardkontakter.se/orgmaster-hsa/v1/hsaObjects.js" params='{"fields":"hsaId,relativeDistinguishedName,countyName","lat":"59.4802","long":"18.0947","distance":4}' last-response="{{items}}"></byutv-jsonp>
+		<iron-ajax auto url="http://cloud.medicor.se:3148/hsa/catalog" params='{"query":"{\"dn\":{\"$regex\":\"ou=Odont\"}}"}' last-response="{{items}}"></iron-ajax>
 		<iron-list id="list" items="[[items]]" as="item">
 			<template>
-				<hsa-item hsaid="{{item.hsaId}}" name="{{item.relativeDistinguishedName}}" county="{{item.countyName}}"></hsa-item>
+				<hsa-item hsaid="{{item.hsaId}}" name="{{item.dn}}" county="{{item.postalAddress}}"></hsa-item>
 			</template>
 		</iron-list>
 
