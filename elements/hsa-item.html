@@ -7,24 +7,48 @@
 		<style>
 			:host {
 				@apply(--paper-font-common-base);
-				cursor: pointer;
 			}
 			
 			.list-item {
-				@apply(--layout-horizontal);
-				@apply(--layout-justified);
-				cursor: pointer;
 				background-color: white;
 				border: 1px solid #ddd;
 				padding: 15px;
 				margin-bottom: 15px;
 			}
+			.list-item > header {
+				font-size: x-large;
+			}
+			.list-item > header > a {
+				text-decoration: none;
+				color: inherit;
+				transition: color 0.3s ease-in-out;
+			}
+			.list-item > header > a:hover {
+				color: var(--paper-amber-900);
+			}
+			.list-item > pre {
+				position: absolute;
+				right: 15px;
+				bottom: 15px;
+				padding: 3px;
+				border: 1px dotted #ccc;
+				background-color: var(--paper-amber-100);
+			}
 		</style>
 
 		<div class="list-item" tabindex="0">
-			<div>{{hsaid}}</div>
-			<div>{{name}}</div>
-			<div>{{county}}</div>
+			<header><a href="[[url]]" target="_blank">[[name]]</a></header>
+			<section>[[address.0]]</section>
+			<section>[[address.1]]</section>
+			<section>[[address.2]]</section>
+			<section>[[address.3]]</section>
+			<section>[[address.4]]</section>
+			<section>[[address.5]]</section>
+			<section>[[address.6]]</section>
+			<pre>[[id]]</pre>
+			<!--
+			<input type="text" value=[[id]] readonly/>
+			-->
 		</div>
 
 	</template>
@@ -34,14 +58,42 @@
 			Polymer({
 				is: 'hsa-item',
 				properties: {
-					hsaid: {
+					model: {
+						type: Object,
+						observer: 'modelChanged'
+					},
+					id:{
+						type: String
+					},
+					address: {
 						type: String
 					},
 					name: {
 						type: String
 					},
-					county: {
-						type: String
+					url: {
+						type: String,
+						value: '#'
+					}
+				},
+				modelChanged: function(aModel) {
+					var dn = {},
+						aa = aModel.postalAddress || [];
+					
+					aModel.dn.split(',').forEach(function(el) {
+						var kv = el.split('=');
+						if (!dn[kv[0]]) { // Do not overwrite properties, the first one is the most important one.
+							 dn[kv[0]] = kv[1];
+						}
+					});
+					aa.unshift(dn.o); // Move organization attribute into postal address array.
+					this.address = aa.filter(function(anItem, anIndex) { // Remove duplicates from postal address array.
+						return aa.indexOf(anItem) === anIndex;
+					});
+					this.name = dn.ou;
+					this.id = aModel.hsaId;
+					if (aModel.webAddress) {
+						this.url = aModel.webAddress.indexOf('http') === 0 ? aModel.webAddress : 'http://' + aModel.webAddress;
 					}
 				}
 			});

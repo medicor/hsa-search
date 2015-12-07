@@ -22,6 +22,7 @@
 			
 			iron-list {
 				flex: 1 100%;
+				overflow-y: scroll;
 				--iron-list-items-container: {
 					max-width: 960px;
 					margin: 45px auto;
@@ -37,9 +38,8 @@
 			
 			paper-input {
 				max-width: 960px;
-				min-width: 420px;
-				margin: auto;
-				margin-top: 30px;
+				min-width: 240px;
+				margin: 30px auto 5px auto;
 				--paper-input-container-label: {
 					font-size: 24px;
 					line-height: 36px;
@@ -51,15 +51,19 @@
 				}
 				;
 			}
+			paper-input.floated-label-placeholder {
+				font-size: 14px;
+			}
+
 		</style>
 
 		<paper-toolbar class="tall">
-			<paper-input label="Sök vårdenhet"></paper-input>
+			<paper-input autofocus label="Sök vårdenhet" value={{criteria::input}} minlength="3" error-message="(ange minst tre tecken)" auto-validate="true"></paper-input>
 		</paper-toolbar>
-		<iron-ajax auto url="http://cloud.medicor.se:3148/catalogs/hsa" params='{"query":"{\"dn\":{\"$regex\":\"ou=Odont\"}}"}' last-response="{{items}}"></iron-ajax>
+		<iron-ajax auto="[[isActive(criteria)]]" url="http://cloud.medicor.se:3148/catalogs/hsa" params="[[getQuery(criteria)]]" last-response="{{items}}" debounce-duration="300"></iron-ajax>
 		<iron-list id="list" items="[[items]]" as="item">
 			<template>
-				<hsa-item hsaid="{{item.hsaId}}" name="{{item.dn}}" county="{{item.postalAddress}}"></hsa-item>
+				<hsa-item model="[[item]]"></hsa-item>
 			</template>
 		</iron-list>
 
@@ -72,7 +76,16 @@
 				properties: {
 					items: {
 						type: Array
-					}
+					},
+					criteria: {
+						type: String
+					},
+				},
+				isActive: function(aCriteria) {
+					return aCriteria.length >= 3;
+				},
+				getQuery: function(aCriteria) {
+					return {"query": '{\"dn\":{\"$regex\":\"' +  aCriteria + '\", \"$options\":\"ig\"}}'};
 				}
 			});
 		});
