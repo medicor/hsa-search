@@ -5,6 +5,8 @@
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../bower_components/paper-progress/paper-progress.html">
 <link rel="import" href="../elements/hsa-item.html">
 <dom-module id="hsa-search-app">
 	<template>
@@ -52,17 +54,29 @@
 				}
 				;
 			}
+			
 			paper-input.floated-label-placeholder {
 				font-size: 14px;
 			}
+			
+			paper-toast {
+				font-size: 18px;
+			}
 
+			paper-progress {
+				--paper-progress-active-color: var(--paper-amber-900);
+				width: 100%;
+			}
+			
 		</style>
 
+		<paper-progress indeterminate disabled="[[!loading]]"></paper-progress>
 		<paper-toolbar class="tall">
 			<paper-input autofocus label="Sök vårdenhet" value={{criteria::input}} minlength="3" error-message="(ange minst tre tecken)" auto-validate="true"></paper-input>
 		</paper-toolbar>
-		<iron-ajax auto="[[isActive(criteria)]]" url="http://cloud.medicor.se:3148/catalogs/hsa" params="[[getQuery(criteria)]]" last-response="{{items}}" debounce-duration="300"></iron-ajax>
-		<iron-list id="list" items="[[items]]" as="item">
+		<paper-toast duration="5000" opened>Sök efter en vårdenhet genom att skriva minst tre tecken i rutan längst upp.</paper-toast>
+		<iron-ajax auto="[[autoLoad(criteria)]]" url="http://cloud.medicor.se:3148/catalogs/hsa" params="[[getQuery(criteria)]]" last-response="{{items}}" debounce-duration="300" on-response="onLoaded"></iron-ajax>
+		<iron-list id="list" items="[[items]]" as="item" selection-enabled="false">
 			<template>
 				<hsa-item model="[[item]]"></hsa-item>
 			</template>
@@ -81,12 +95,26 @@
 					criteria: {
 						type: String
 					},
+					loading: {
+						type: Boolean,
+						value: false
+					}
 				},
-				isActive: function(aCriteria) {
-					return aCriteria.length >= 3;
+				onLoaded: function() {
+					this.loading = false;
+				},
+				autoLoad: function(aCriteria) {
+					var ok = aCriteria.length >= 3;
+					if (!ok) {
+						this.items = null;
+					}
+					this.loading = ok;
+					return ok;
 				},
 				getQuery: function(aCriteria) {
-					return {"query": '{\"dn\":{\"$regex\":\"' +  aCriteria + '\", \"$options\":\"ig\"}}'};
+					return {
+						"query": '{\"dn\":{\"$regex\":\"' + aCriteria + '\", \"$options\":\"ig\"}}'
+					};
 				}
 			});
 		});

@@ -21,6 +21,8 @@
     "iron-ajax": "PolymerElements/iron-ajax#latest",
     "neon-animation": "PolymerElements/neon-animation#latest",
     "paper-toolbar": "PolymerElements/paper-toolbar#latest",
-    "paper-input": "PolymerElements/paper-input#latest"
+    "paper-input": "PolymerElements/paper-input#latest",
+    "paper-toast": "PolymerElements/paper-toast#latest",
+    "paper-progress": "PolymerElements/paper-progress#latest"
   }
 }

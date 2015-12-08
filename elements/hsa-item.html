@@ -7,6 +7,8 @@
 		<style>
 			:host {
 				@apply(--paper-font-common-base);
+				opacity: 0;
+				transition: opacity 1s;
 			}
 			
 			.list-item {
@@ -26,12 +28,13 @@
 			.list-item > header > a:hover {
 				color: var(--paper-amber-900);
 			}
-			.list-item > pre {
+			.list-item > address {
 				position: absolute;
 				right: 15px;
-				bottom: 15px;
+				bottom: 30px;
 				padding: 3px;
 				border: 1px dotted #ccc;
+				font: 13px/13px monospace;
 				background-color: var(--paper-amber-100);
 			}
 		</style>
@@ -45,7 +48,7 @@
 			<section>[[address.4]]</section>
 			<section>[[address.5]]</section>
 			<section>[[address.6]]</section>
-			<pre>[[id]]</pre>
+			<address>[[id]]</address>
 			<!--
 			<input type="text" value=[[id]] readonly/>
 			-->
@@ -75,6 +78,11 @@
 						type: String,
 						value: '#'
 					}
+				},
+				attached: function() {
+					this.async(function() {
+						this.style.opacity = 1.0;	
+					});
 				},
 				modelChanged: function(aModel) {
 					var dn = {},
