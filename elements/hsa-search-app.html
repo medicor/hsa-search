@@ -76,7 +76,7 @@
 		</paper-toolbar>
 		<paper-toast duration="5000" opened>Sök efter en vårdenhet genom att skriva minst tre tecken i rutan längst upp.</paper-toast>
 		<iron-ajax auto="[[autoLoad(criteria)]]" url="http://cloud.medicor.se:3148/catalogs/hsa" params="[[getQuery(criteria)]]" last-response="{{items}}" debounce-duration="300" on-response="onLoaded"></iron-ajax>
-		<iron-list id="list" items="[[items]]" as="item" selection-enabled="false">
+		<iron-list id="list" items="[[items]]" as="item">
 			<template>
 				<hsa-item model="[[item]]"></hsa-item>
 			</template>
@@ -100,21 +100,28 @@
 						value: false
 					}
 				},
+				ready: function() {
+					var hs = location.hash;
+					if (hs) {
+						this.criteria = unescape(hs.split('=')[1]);
+					}
+				},
 				onLoaded: function() {
 					this.loading = false;
+				},
+				getQuery: function(aCriteria) {
+					return {
+						"query": '{\"dn\":{\"$regex\":\"' + aCriteria + '\", \"$options\":\"ig\"}}'
+					};
 				},
 				autoLoad: function(aCriteria) {
 					var ok = aCriteria.length >= 3;
 					if (!ok) {
 						this.items = null;
 					}
+					location.hash = 'q=' + escape(aCriteria);
 					this.loading = ok;
 					return ok;
-				},
-				getQuery: function(aCriteria) {
-					return {
-						"query": '{\"dn\":{\"$regex\":\"' + aCriteria + '\", \"$options\":\"ig\"}}'
-					};
 				}
 			});
 		});
