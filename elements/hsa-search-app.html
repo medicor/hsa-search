@@ -74,7 +74,7 @@
 		<paper-toolbar class="tall">
 			<paper-input autofocus label="Sök vårdenhet" value={{criteria::input}} minlength="3" error-message="(ange minst tre tecken)" auto-validate="true"></paper-input>
 		</paper-toolbar>
-		<paper-toast duration="5000" opened>Sök efter en vårdenhet genom att skriva minst tre tecken i rutan längst upp.</paper-toast>
+		<paper-toast id="toaster"></paper-toast>
 		<iron-ajax auto="[[autoLoad(criteria)]]" url="http://cloud.medicor.se:3148/catalogs/hsa" params="[[getQuery(criteria)]]" last-response="{{items}}" debounce-duration="300" on-response="onLoaded"></iron-ajax>
 		<iron-list id="list" items="[[items]]" as="item">
 			<template>
@@ -104,7 +104,17 @@
 					var hs = location.hash;
 					if (hs) {
 						this.criteria = unescape(hs.split('=')[1]);
+						return;
 					}
+					this.$.toaster.text = 'Sök efter en vårdenhet genom att skriva minst tre tecken i rutan längst upp.';
+					this.$.toaster.opened = true;
+				},
+				listeners: {
+					'copied': 'showToast' 
+				},
+				showToast: function(anEvent) {
+					this.$.toaster.text = 'HSA-nyckel kopierad till klippbordet!';
+					this.$.toaster.opened = true;
 				},
 				onLoaded: function() {
 					this.loading = false;

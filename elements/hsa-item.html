@@ -17,24 +17,27 @@
 				padding: 15px;
 				margin-bottom: 15px;
 			}
+			
 			.list-item > header {
 				font-size: x-large;
 			}
+			
 			.list-item > header > a {
 				text-decoration: none;
 				color: inherit;
 				transition: color 0.3s ease-in-out;
 			}
+			
 			.list-item > header > a:hover {
 				color: var(--paper-amber-900);
 			}
-			.list-item > address {
+			
+			.list-item > input[type="text"] {
 				display: inline-block;
 				position: absolute;
 				right: 15px;
 				bottom: 30px;
-				width: 190px;
-				height: 32px;
+				width: 200px;
 				padding: 3px;
 				text-align: right;
 				border: 1px dotted #ccc;
@@ -52,10 +55,7 @@
 			<section>[[address.4]]</section>
 			<section>[[address.5]]</section>
 			<section>[[address.6]]</section>
-			<address>[[id]]</address>
-			<!--
-			<input type="text" value=[[id]] readonly/>
-			-->
+			<input id="hsa-id" type="text" value=[[id]] readonly/>
 		</div>
 
 	</template>
@@ -69,7 +69,7 @@
 						type: Object,
 						observer: 'modelChanged'
 					},
-					id:{
+					id: {
 						type: String
 					},
 					address: {
@@ -85,17 +85,25 @@
 				},
 				attached: function() {
 					this.async(function() {
-						this.style.opacity = 1.0;	
+						this.style.opacity = 1.0;
 					});
+				},
+				listeners: {
+					'hsa-id.click': 'copyContent',
+				},
+				copyContent: function(anEvent) {
+					document.execCommand('selectAll');
+					document.execCommand('copy');
+					this.fire('copied'); // Notify parent element.
 				},
 				modelChanged: function(aModel) {
 					var dn = {},
 						aa = aModel.postalAddress || [];
-					
+
 					aModel.dn.split(',').forEach(function(el) {
 						var kv = el.split('=');
 						if (!dn[kv[0]]) { // Do not overwrite properties, the first one is the most important one.
-							 dn[kv[0]] = kv[1];
+							dn[kv[0]] = kv[1];
 						}
 					});
 					aa.unshift(dn.o); // Move organization attribute into postal address array.
