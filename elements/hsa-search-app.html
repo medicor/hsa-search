@@ -62,12 +62,11 @@
 			paper-toast {
 				font-size: 18px;
 			}
-
+			
 			paper-progress {
 				--paper-progress-active-color: var(--paper-amber-900);
 				width: 100%;
 			}
-			
 		</style>
 
 		<paper-progress indeterminate disabled="[[!loading]]"></paper-progress>
@@ -110,9 +109,9 @@
 					this.$.toaster.opened = true;
 				},
 				listeners: {
-					'copied': 'showToast' 
+					'copied': 'showToast'
 				},
-				showToast: function(anEvent) {
+				showToast: function() {
 					this.$.toaster.text = 'HSA-nyckel kopierad till klippbordet!';
 					this.$.toaster.opened = true;
 				},
@@ -120,8 +119,16 @@
 					this.loading = false;
 				},
 				getQuery: function(aCriteria) {
+					var ca = aCriteria.split(' '),
+						qc = '{\"dn\":{\"$regex\":\"{0}\", \"$options\":\"ig\"}}';
+
+					if (ca.length === 1) {
+						return {
+							query: qc.format(ca[0])
+						};
+					}
 					return {
-						"query": '{\"dn\":{\"$regex\":\"' + aCriteria + '\", \"$options\":\"ig\"}}'
+						query: '{"$and": [' + ca.reduce(function(p, c) { return qc.format(p) + ',' + qc.format(c); }) + ']}'
 					};
 				},
 				autoLoad: function(aCriteria) {
