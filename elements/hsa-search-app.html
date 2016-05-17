@@ -12,7 +12,7 @@
 	<template>
 		<style>
 			:root {
-				--default-primary-color: var(--paper-amber-900);
+				--primary-color: var(--paper-amber-900);
 			}
 			
 			:host {
@@ -74,7 +74,7 @@
 			<paper-input autofocus label="Sök vårdenhet" value={{criteria::input}} minlength="3" error-message="(ange minst tre tecken)" auto-validate="true"></paper-input>
 		</paper-toolbar>
 		<paper-toast id="toaster"></paper-toast>
-		<iron-ajax auto="[[autoLoad(criteria)]]" url="http://cloud.medicor.se:3148/catalogs/hsa" params="[[getQuery(criteria)]]" last-response="{{items}}" debounce-duration="300" on-response="onLoaded"></iron-ajax>
+		<iron-ajax auto="[[autoLoad(criteria)]]" url="http://cloud.medicor.se:3148/catalogs/hsa" params="[[getQuery(criteria)]]" last-response="{{items}}" debounce-duration="500" on-response="onLoaded"></iron-ajax>
 		<iron-list id="list" items="[[items]]" as="item">
 			<template>
 				<hsa-item model="[[item]]"></hsa-item>
@@ -119,7 +119,7 @@
 					this.loading = false;
 				},
 				getQuery: function(aCriteria) {
-					var ca = aCriteria.split(' '),
+					var ca = aCriteria.split(' ').filter(Boolean), // Remove empty (falsy) values.
 						qc = '{\"dn\":{\"$regex\":\"{0}\", \"$options\":\"ig\"}}';
 
 					if (ca.length === 1) {
@@ -128,7 +128,8 @@
 						};
 					}
 					return {
-						query: '{"$and": [' + ca.reduce(function(p, c) { return qc.format(p) + ',' + qc.format(c); }) + ']}'
+					//	query: '{"$and": [' + ca.reduce(function(p, c) { return qc.format(p) + ',' + qc.format(c); }) + ']}'
+						query: '{"$and": [' + ca.map(function(p) { return qc.format(p); }).join(',') + ']}'
 					};
 				},
 				autoLoad: function(aCriteria) {
