@@ -74,7 +74,7 @@
 			<paper-input autofocus label="Sök vårdenhet" value={{criteria::input}} minlength="3" error-message="(ange minst tre tecken)" auto-validate="true"></paper-input>
 		</paper-toolbar>
 		<paper-toast id="toaster"></paper-toast>
-		<iron-ajax auto="[[autoLoad(criteria)]]" url="http://cloud.medicor.se:3148/catalogs/hsa" params="[[getQuery(criteria)]]" last-response="{{items}}" debounce-duration="500" on-response="onLoaded"></iron-ajax>
+		<iron-ajax auto="[[autoLoad(criteria)]]" url="http://cloud.medicor.se/mongo/catalogs/hsa" params="[[getQuery(criteria)]]" last-response="{{items}}" debounce-duration="500" on-response="onLoaded"></iron-ajax>
 		<iron-list id="list" items="[[items]]" as="item">
 			<template>
 				<hsa-item model="[[item]]"></hsa-item>
